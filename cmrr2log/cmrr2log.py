@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 
-#TODO: Add option to generate a json file sidecar
-
 """
 from pathlib import Path
+import json
 from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
 from .extract_cmrr import extract_cmrr_physio
-from .utils import create_format
+from .utils import (create_format, create_sidecar_dict)
 
 def get_parser():
     
@@ -24,13 +23,21 @@ def get_parser():
     
     parser.add_argument('-f', '--filename',
                         type = str,
-                        default = '{f}_{p}_{t}_{s}', 
+                        default = '{b}_{p}_{t}_{s}', 
                         help = 'filename in new style ({b}=basename, {d}=description,'
                         '{e}=echo number, {f}=folder name, {i}=ID of patient, {j}=seriesInstanceUID,'
                         '{k}=studyInstanceUID, {m}=manufacturer, {n}=name of patient, {p}=protocol,'
                         '{r=instance number, {s}=series number, {t}=time, {u}=acquisition number,'
                         '{v=vendor, {x}=study ID; {z}=sequence name;'
-                        'default {f}_{p}_{t}_{s})' )
+                        'default {b}_{p}_{t}_{s})' )    
+    
+    parser.add_argument('-b', 
+                        dest = 'sidecar',
+                        type=str,
+                        choices = ['y', 'n'],
+                        default = 'y',
+                        help = 'whetheteror not to generate a json sidecar' 
+                        'with the same basename as the log files')
     
     return parser
     
@@ -50,6 +57,12 @@ def main():
     
     output_basename = opts.filename.format(**create_format(dcm_path))
     
+    if opts.sidecar == 'y':
+        sidecar_dict = create_sidecar_dict(dcm_path)
+        json_file = output_path + "/" + output_basename + ".json"
+        with open(json_file, 'w') as f:
+            json.dump(sidecar_dict, f, indent=4)
+                
     extract_cmrr_physio(dcm_path.absolute().as_posix(), output_path, output_basename)
     
 if __name__ == '__main__':

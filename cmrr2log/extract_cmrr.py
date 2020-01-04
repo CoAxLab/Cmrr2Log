@@ -38,7 +38,7 @@ def extract_cmrr_physio(dcm_file, output_path, basename):
 
         if image_type == ['ORIGINAL', 'PRIMARY', 'RAWDATA', 'PHYSIO'] and \
                 private_7fe1_0010_value.strip() == 'SIEMENS CSA NON-IMAGE':
-
+                    
             private_7fe1_1010_value = dataset['0x7fe11010'].value
             size = len(private_7fe1_1010_value)
             rows = int(dataset.AcquisitionNumber)
