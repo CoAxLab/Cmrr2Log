@@ -38,5 +38,5 @@ if __name__ == "__main__":
             download_url=DOWNLOAD_URL,
             packages=['cmrr2log'],
             entry_points= ENTRY_POINTS,
-            install_requires=['future']
+            install_requires=['future>=0.16.0', 'pydicom>=1.3.0']
             )
