@@ -51,7 +51,7 @@ def main():
     
     dcm_path = opts.input_dcm
     if opts.output_dir:
-        output_path = opts.output_dir
+        output_path = opts.output_dir.as_posix()
     else:
         output_path = dcm_path.parent.absolute().as_posix()
     
